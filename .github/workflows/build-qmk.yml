@@ -1,0 +1,48 @@
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+name: Build QMK
+#on: [push, pull_request, workflow_dispatch]
+on: [pull_request, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: qmkfm/qmk_cli
+    strategy:
+      fail-fast: false
+    steps:
+      - name: qmk
+        uses: actions/checkout@v3
+        with:
+          repository: qmk/qmk_firmware
+          ref: master
+          path: qmk_firmware
+          fetch-depth: 0
+      - name: xmk
+        working-directory: qmk_firmware
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git remote add manna-harbour https://github.com/manna-harbour/qmk_firmware.git
+          git fetch manna-harbour xmk
+          git merge manna-harbour/xmk
+      - name: submodules
+        working-directory: qmk_firmware
+        run: |
+          make git-submodule
+      - name: build
+        working-directory: qmk_firmware
+        run: |
+          for km in keyboards/converter/xmk/keymaps/*
+          do
+            qmk compile -kb converter/xmk -km `basename "$km"`
+          done
+      - name: copy
+        run: |
+          mkdir artifacts && cp qmk_firmware/*xmk* artifacts
+      - name: artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: xmk-qmk
+          path: artifacts
+        continue-on-error: true

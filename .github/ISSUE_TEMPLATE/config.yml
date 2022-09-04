@@ -1,0 +1,8 @@
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+blank_issues_enabled: true
+contact_links:
+  - name: 𝑥MK Discussions and Support
+    url: https://github.com/manna-harbour/xmk/discussions/1
+    about: Including support requests, bug reports, and feature requests.

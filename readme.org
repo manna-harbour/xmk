@@ -1,0 +1,358 @@
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+# M-x org-make-toc to update TOC
+# https://github.com/alphapapa/org-make-toc
+
+* [[https://github.com/manna-harbour/xmk][𝑥MK]]
+:PROPERTIES:
+:TOC:      :include descendants :depth 1
+:END:
+
+[[docs/images/xmk-banner.jpg]]
+
+Use programmable keyboard firmware with any keyboard.
+
+:CONTENTS:
+- [[#related-projects][Related Projects]]
+- [[#xmk-application][xmk Application]]
+- [[#firmware][Firmware]]
+- [[#discussions-and-support][Discussions and Support]]
+:END:
+
+** Related Projects
+
+[[https://qmk.fm/][QMK]] and [[https://zmk.dev/][ZMK]] are firmware for compatible programmable keyboards, and support customisation functions such as remapping, layers, and dual functions keys. 𝑥MK enables QMK and ZMK to be used with any keyboard, so that customisation functions can be used on non-programmable keyboards.
+
+[[https://github.com/kmonad/kmonad][KMonad]] or a [[https://github.com/qmk/qmk_firmware/tree/master/keyboards/converter/usb_usb][QMK USB to USB keyboard protocol converter]] can be used in a similar manner. The main differences are summarised below.
+
+|            | 𝑥MK       | 𝑥MK ([[#native_posix_64-board][native]]) | KMonad   | Converter |
+|------------+-----------+------------------------------------------+----------+-----------|
+| *Keyboard* | any       | any                                      | any      | USB       |
+| *OS*       | Linux     | Linux                                    | multiple | any       |
+| *Hardware* | MCU board | none                                     | none     | converter |
+| *Software* | ~xmk~     | ~xmk~, ~usbip~                           | ~kmonad~ | none      |
+| *Keymap*   | QMK, ZMK  | ZMK                                      | KMonad   | QMK       |
+
+𝑥MK can be used with any keymap. [[https://github.com/manna-harbour/miryoku_qmk/tree/miryoku/users/manna-harbour_miryoku#𝑥mk][Miryoku QMK]] and [[https://github.com/manna-harbour/miryoku_zmk#𝑥mk][Miryoku ZMK]] include support for 𝑥MK.
+
+** xmk Application
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+:CONTENTS:
+- [[#prerequisites][Prerequisites]]
+- [[#usage][Usage]]
+- [[#maps][Maps]]
+:END:
+
+*** Prerequisites
+
+- https://github.com/gvalkov/python-evdev
+
+*** Usage
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+~cd~ to [[./src]] and run ~xmk~ as in the following examples.
+
+:CONTENTS:
+- [[#find-the-keyboard-device][Find the Keyboard Device]]
+- [[#create-a-map][Create a Map]]
+- [[#use-a-map][Use a Map]]
+- [[#typing][Typing]]
+- [[#record][Record]]
+- [[#playback][Playback]]
+:END:
+
+**** Find the Keyboard Device
+
+Find the device for your keyboard under ~/dev/input/by-id/~. It will usually end in ~event-kbd~.
+
+#+BEGIN_SRC sh
+ls /dev/input/by-id/
+#+END_SRC
+
+Note the keyboard device in the output.
+#+BEGIN_EXAMPLE
+usb-SIGMACHIP_USB_Keyboard-event-kbd
+#+END_EXAMPLE
+
+When using ~xmk~ with the ~-k~ option, give the full path to the keyboard device.
+
+#+BEGIN_SRC sh
+./xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./maps/minidox/60_ansi -s > /dev/ttyACM0
+#+END_SRC
+**** Create a Map
+
+The ~-c~ option is used to create a map.
+
+#+BEGIN_SRC sh
+./xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -c ./maps/minidox/60_ansi
+#+END_SRC
+
+Press each key to be used in the keymap, in order of keymap key position. Press a key a second time to insert a line break. Press a third time to exit. Optionally edit the file to reformat whitespace or add comments with ~#~.
+
+**** Use a Map
+
+The ~-m~ option is used to specify a map.
+
+#+BEGIN_SRC sh
+./xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./maps/minidox/tap -s > /dev/ttyACM0
+#+END_SRC
+
+**** Typing
+
+The ~-s~ option is used to output key press and release commands to be redirected to the firmware shell.
+
+#+BEGIN_SRC sh
+./xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./maps/minidox/60_ansi -s > /dev/ttyACM0
+#+END_SRC
+
+**** Record
+
+The ~-r~ option is used to record keystrokes with timing.
+
+#+BEGIN_SRC sh
+./xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./maps/minidox/60_ansi -r recordings/hello_world > /dev/ttyACM0
+#+END_SRC
+
+**** Playback
+
+The ~-p~ option is used to playback recorded keystrokes with timing to be redirected to the firmware shell.
+
+#+BEGIN_SRC sh
+./xmk -p recordings/hello_world > /dev/ttyACM0
+#+END_SRC
+
+*** Maps
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+Map of keyboard keys to keymap key positions.
+
+Sample maps are included under [[./src/maps]] by keymap layout.
+
+:CONTENTS:
+- [[#minidox][minidox]]
+:END:
+
+**** minidox
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+:CONTENTS:
+- [[#60_ansi][60_ansi]]
+- [[#60_ansi-noreverseangle][60_ansi-noreverseangle]]
+- [[#kinesis_advantage][kinesis_advantage]]
+- [[#tap][tap]]
+:END:
+
+***** 60_ansi
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-60_ansi.png]]
+
+***** 60_ansi-noreverseangle
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-60_ansi-noreverseangle.png]]
+
+***** kinesis_advantage
+
+[[https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/mapping/miryoku-kle-mapping-kinesis_advantage.png]]
+
+***** tap
+
+Corresponds to the default [[https://github.com/manna-harbour/miryoku/tree/master/docs/reference#additional-features][Miryoku Tap layer]].
+
+** Firmware
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+:CONTENTS:
+- [[#qmk][QMK]]
+- [[#zmk][ZMK]]
+:END:
+
+*** QMK
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+A bare QMK-compatible MCU board connected to the host over USB, running QMK built with the ~converter/xmk~ keyboard definition. USB HID is over USB. Communication from ~xmk~ to QMK is over USB CDC ACM UART.
+
+:CONTENTS:
+- [[#prerequisites][Prerequisites]]
+- [[#setup][Setup]]
+:END:
+
+**** Prerequisites
+
+- A [[https://github.com/qmk/qmk_firmware/blob/master/docs/compatible_microcontrollers.md][QMK-compatible]] MCU board.
+
+**** Setup
+
+The QMK keyboard definition for 𝑥MK is a available at [[https://github.com/manna-harbour/qmk_firmware/tree/xmk/keyboards/converter/xmk]].
+
+Add your keymap. If it is not using one of the supported layouts, also edit ~info.json~ to add a new entry under ~layouts~, ensuring the ~matrix~ entries are in order and without gaps. If adding support for a community layout, also append to ~community_layouts~.
+
+For local builds, build with keyboard ~converter/xmk~.
+
+For workflow builds, fork this repo. Edit [[.github/workflows/build-qmk.yml]] to modify the values for ~repository~ and ~ref~ in the ~qmk~ step for the QMK fork containing your keymap. Run the ~Build QMK~ workflow.
+
+Connect the MCU board to USB and flash the firmware.
+
+Reconnect the MCU board and find the tty device.
+
+#+BEGIN_SRC sh
+dmesg | grep tty
+#+END_SRC
+
+Note the tty device in the output.
+#+BEGIN_EXAMPLE
+cdc_acm 1-3.4.4:1.0: ttyACM0: USB ACM device
+#+END_EXAMPLE
+
+When using ~xmk~ with the ~-s~ option, redirect output to the tty device from the previous step.
+
+#+BEGIN_SRC sh
+./xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./maps/minidox/60_ansi -s > /dev/ttyACM0
+#+END_SRC
+
+*** ZMK
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+Two different methods of operation are supported.
+
+:CONTENTS:
+- [[#xmk-shield][xmk shield]]
+- [[#native_posix_64-board][native_posix_64 board]]
+:END:
+
+**** xmk shield
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+A bare ZMK-compatible MCU board connected to the host over USB, running ZMK built with the ~xmk~ shield definition.  USB HID is over USB. Communication from ~xmk~ to ZMK is over USB CDC ACM UART.
+
+:CONTENTS:
+- [[#prerequisites][Prerequisites]]
+- [[#setup][Setup]]
+:END:
+
+***** Prerequisites
+
+- A [[https://zmk.dev/docs/hardware][ZMK-compatible]] MCU board.
+
+***** Setup
+
+Edit [[./zmk/xmk.keymap]] to add your keymap. No transform is required.
+
+For local builds, merge https://github.com/zmkfirmware/zmk/pull/1318, ~west update~, and build with shield ~xmk~ and the appropriate board for your MCU board, using the path to [[./zmk]] for [[https://zmk.dev/docs/development/build-flash#building-from-zmk-config-folder][ZMK_CONFIG]].
+
+For workflow builds, fork this repo. Edit [[./zmk/build-xmk.yml]] to adjust the value for ~board~ for your MCU board. Run the ~Build ZMK xmk~ workflow.
+
+Connect the MCU board to USB and flash the firmware.
+
+Reconnect the MCU board and find the tty device.
+
+#+BEGIN_SRC sh
+dmesg | grep tty
+#+END_SRC
+
+Note the tty device in the output.
+#+BEGIN_EXAMPLE
+cdc_acm 1-3.4.4:1.0: ttyACM0: USB ACM device
+#+END_EXAMPLE
+
+When using ~xmk~ with the ~-s~ option, redirect output to the tty device from the previous step.
+
+#+BEGIN_SRC sh
+./xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./maps/minidox/60_ansi -s > /dev/ttyACM0
+#+END_SRC
+
+**** native_posix_64 board
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+Note: https://github.com/zmkfirmware/zmk/issues/1444.
+
+A Zephyr native posix application running on the host. USB HID is over USB/IP. Communication from ~xmk~ to ZMK is through a pty.
+
+:CONTENTS:
+- [[#prerequisites][Prerequisites]]
+- [[#setup][Setup]]
+:END:
+
+***** Prerequisites
+
+- usbip
+
+***** Setup
+
+Edit [[./zmk/native_posix_64.keymap]] to add your keymap. No transform is required.
+
+For local builds, merge https://github.com/zmkfirmware/zmk/pull/1318, ~west update~, and build with board ~native_posix_64~, using the path to [[./zmk]] for [[https://zmk.dev/docs/development/build-flash#building-from-zmk-config-folder][ZMK_CONFIG]].
+
+For workflow builds, fork this repo and run the ~Build ZMK native_posix_64~ workflow.
+
+Load the usbip modules if necessary.
+
+#+BEGIN_SRC sh
+sudo modprobe vhci-hcd
+#+END_SRC
+
+Execute ~zmk.elf~.
+
+#+BEGIN_SRC sh
+./build/zephyr/zmk.elf
+#+END_SRC
+
+Note the pty device in the output.
+
+#+BEGIN_EXAMPLE
+UART_0 connected to pseudotty: /dev/pts/18
+#+END_EXAMPLE
+
+Find the busid of the usbip server.
+
+#+BEGIN_SRC sh
+usbip list -r localhost
+#+END_SRC
+
+Note the busid in the output.
+#+BEGIN_EXAMPLE
+Exportable USB devices
+======================
+ - localhost
+        1-1: OpenMoko, Inc. : unknown product (1d50:615e)
+           : /sys/devices/pci0000:00/0000:00:01.2/usb1/1-1
+           : (Defined at Interface level) (00/00/00)
+           :  0 - Human Interface Device / No Subclass / None (03/00/00)
+#+END_EXAMPLE
+
+Attach the usbip client using the busid from the previous step.
+
+#+BEGIN_SRC sh
+sudo usbip attach -r localhost -b 1-1
+#+END_SRC
+
+When using ~xmk~ with the ~-s~ option, redirect output to the pty device from the earlier step.
+
+#+BEGIN_SRC sh
+./xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./maps/minidox/60_ansi -s > /dev/pts/18
+#+END_SRC
+
+** Discussions and Support
+
+- [[https://github.com/manna-harbour/xmk/discussions/1][𝑥MK Discussions and Support]]
+
+* 
+
+[[https://github.com/manna-harbour][https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/logos/manna-harbour-boa-32.png]]

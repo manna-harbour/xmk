@@ -1,0 +1,5 @@
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+config SHIELD_XMK
+	def_bool $(shields_list_contains,xmk)

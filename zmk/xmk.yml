@@ -1,0 +1,6 @@
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+include:
+  - shield: xmk
+    board: nice_nano_v2

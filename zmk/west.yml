@@ -1,0 +1,18 @@
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: petejohanson
+      url-base: https://github.com/petejohanson
+  projects:
+    - name: zmk
+#      remote: zmkfirmware
+#      revision: main
+      remote: petejohanson
+      revision: shell/tap-command
+      import: app/west.yml
+  self:
+    path: config

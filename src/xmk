@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+import evdev
+import argparse
+import datetime
+import time
+
+parser = argparse.ArgumentParser(
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    description='''
+See https://github.com/manna-harbour/xmk.
+''',
+    )
+parser.add_argument(
+    '-k',
+    '--keyboard',
+    help='Grab and read key events from evdev keyboard device KEYBOARD.')
+parser.add_argument(
+    '-m',
+    '--map',
+    help='Translate keycodes to keymap position using map file MAP.')
+group = parser.add_mutually_exclusive_group(required=True)
+group.add_argument(
+    '-c',
+    '--codes',
+    help='Save keycodes in keymap position order to map file CODES.')
+group.add_argument(
+    '-s',
+    '--shell',
+    action="store_true",
+    help='Output firmware shell commands.')
+group.add_argument(
+    '-r',
+    '--record',
+    help='Save timed firmware shell commands to file RECORD.')
+group.add_argument(
+    '-p',
+    '--play',
+    help='Read timed firmware shell commands from file PLAY and output firmware shell commands according to timing.')
+args = parser.parse_args()
+if (args.shell or args.record is not None) and args.map is None:
+    parser.error("arguments -s/--shell -r/--record require argument -m/--map")
+if (args.codes is not None or args.shell or args.record is not None) and args.keyboard is None:
+    print (args)
+    parser.error("arguments -c/--codes -s/--shell -r/--record require argument -k/--keyboard")
+
+if args.map is not None:
+    code_to_index = {}
+    i = 0
+    map = open(args.map, 'r')
+    for line in map.read().splitlines():
+        codes = line.split()
+        for code in codes:
+            if code[0] == '#':
+                break
+            else:
+                code_to_index['KEY_' + code.upper()] = str(i)
+                i += 1
+
+if args.keyboard is not None:
+    keyboard = evdev.InputDevice(args.keyboard)
+    keyboard.grab()
+
+if args.record is not None:
+    record = open(args.record, 'w')
+    last = datetime.datetime.now()
+
+if args.codes is not None:
+    codes = open(args.codes, 'w')
+
+if args.codes is not None or args.shell or args.record is not None:
+    if args.codes is not None:
+        last_code = None
+        double = False
+    for event in keyboard.read_loop():
+        if event.type == evdev.ecodes.EV_KEY:
+            if args.codes is not None:
+                if event.value == 0:
+                    code = evdev.ecodes.KEY[event.code][4:].lower()
+                    if code == last_code:
+                        print ('', flush=True)
+                        print ('', flush=True, file = codes)
+                        if double:
+                            keyboard.close()
+                            codes.close()
+                            exit()
+                        else:
+                            double = True
+                    else:
+                        print (code, end = ' ', flush=True)
+                        print (code, end = ' ', flush=True, file = codes)
+                        last_code = code
+                        double = False
+            if args.shell or args.record is not None:
+                code = evdev.ecodes.KEY[event.code]
+                if code in code_to_index:
+                    index = code_to_index[code]
+                    if event.value == 0:
+                        command  = "key release " + index
+                    elif event.value == 1:
+                        command = "key press " + index
+                    else:
+                        command = None
+                    if command is not None:
+                        print (command)
+                        if args.record is not None:
+                            now = datetime.datetime.now()
+                            delta = str((now - last).total_seconds())
+                            last = now
+                            print ('wait ' + delta, file = record)
+                            print (command, file = record)
+
+if args.play is not None:
+    play = open(args.play, 'r')
+    for line in play.read().splitlines():
+        play_args = line.split()
+        if play_args[0] == 'wait':
+            time.sleep(float(play_args[1]))
+        else:
+             print (line)

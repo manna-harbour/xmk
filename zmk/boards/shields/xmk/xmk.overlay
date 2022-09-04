@@ -1,0 +1,17 @@
+// Copyright 2022 Manna Harbour
+// https://github.com/manna-harbour/xmk
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zephyr,shell-uart = &cdc_acm_uart;
+    };
+
+    kscan: kscan {
+        compatible = "zmk,kscan-mock";
+        label = "KSCAN_MOCK";
+        rows = <4>;
+        columns = <32>;
+        events = <>;
+    };
+};

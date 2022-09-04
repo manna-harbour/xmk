@@ -1,0 +1,16 @@
+// Copyright 2022 Manna Harbour
+// https://github.com/manna-harbour/xmk
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                &kp A
+            >;
+        };
+    };
+};

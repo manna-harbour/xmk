@@ -1,0 +1,8 @@
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+grave     1         2         3         4                   8         9         0         minus      equal
+tab       q         w         e         r                   i         o         p         leftbrace  rightbrace
+capslock  a         s         d         f                   k         l         semicolon apostrophe enter
+                    z         x         c                   comma     dot       slash
+

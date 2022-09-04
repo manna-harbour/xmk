@@ -1,0 +1,5 @@
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+include:
+  - board: native_posix_64

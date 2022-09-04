@@ -1,0 +1,51 @@
+key press 26
+wait 0.087855
+key release 26
+wait 0.056086
+key press 17
+wait 0.136016
+key release 17
+wait 0.120071
+key press 6
+wait 0.079967
+key release 6
+wait 0.079955
+key press 6
+wait 0.088037
+key release 6
+wait 0.088029
+key press 19
+wait 0.087954
+key release 19
+wait 0.191929
+key press 27
+wait 0.120025
+key release 27
+wait 0.039954
+key press 31
+wait 0.112093
+key release 31
+wait 0.072042
+key press 1
+wait 0.071857
+key release 1
+wait 0.040127
+key press 19
+wait 0.135993
+key press 11
+wait 0.01599
+key release 19
+wait 0.079989
+key release 11
+wait 0.047958
+key press 6
+wait 0.112063
+key release 6
+wait 0.007915
+key press 23
+wait 0.111879
+key release 23
+wait 0.088177
+key press 28
+wait 0.087823
+key release 28
