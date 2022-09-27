@@ -1,7 +1,7 @@
 # Copyright 2022 Manna Harbour
 # https://github.com/manna-harbour/xmk
 
-name: Build QMK
+name: Build converter/xmk
 #on: [push, pull_request, workflow_dispatch]
 on: [pull_request, workflow_dispatch]
 jobs:
@@ -43,6 +43,6 @@ jobs:
       - name: artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: xmk-qmk
+          name: xmk-converter-xmk
           path: artifacts
         continue-on-error: true

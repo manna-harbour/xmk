@@ -1,7 +1,7 @@
 # Copyright 2022 Manna Harbour
 # https://github.com/manna-harbour/xmk
 
-name: 'Build ZMK xmk'
+name: 'Build native_posix_64 board'
 #on: [push, pull_request, workflow_dispatch]
 on: [pull_request, workflow_dispatch]
 jobs:
@@ -9,5 +9,6 @@ jobs:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
     with:
       config_path: zmk
-      build_matrix_path: zmk/xmk.yml
-      artifact_name: xmk-zmk-xmk
+      build_matrix_path: zmk/native_posix_64.yml
+      fallback_binary: elf
+      artifact_name: xmk-native_posix_64-board
