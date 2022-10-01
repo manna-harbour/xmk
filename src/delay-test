@@ -1,0 +1,43 @@
+#! /bin/sh
+
+# Copyright 2022 Manna Harbour
+# https://github.com/manna-harbour/xmk
+
+enter=33
+x=21
+space=31
+dot=28
+slash=29
+
+default=0.1
+
+tap() {
+  if [ -n "$2" ]
+  then
+    wait="$2"
+  else
+    wait="$default"
+  fi
+  cat << EOF
+wait $default
+key press $1
+wait $wait
+key release $1
+wait $default
+EOF
+}
+
+tap $enter
+for delay in 0.00 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.10
+do
+  tap $x
+  tap $space
+  for j in 0 1 2 3 4
+  do
+    tap $dot $delay
+    tap $slash $delay
+  done
+  tap $space
+  tap $x
+  tap $enter
+done
