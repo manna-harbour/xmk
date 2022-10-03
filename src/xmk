@@ -3,7 +3,6 @@
 # Copyright 2022 Manna Harbour
 # https://github.com/manna-harbour/xmk
 
-import evdev
 import argparse
 import datetime
 import time
@@ -61,6 +60,7 @@ if args.map is not None:
                 i += 1
 
 if args.keyboard is not None:
+    import evdev
     keyboard = evdev.InputDevice(args.keyboard)
     keyboard.grab()
 
