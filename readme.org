@@ -48,23 +48,49 @@ Use programmable keyboard firmware with any keyboard.
 :TOC:      :include descendants :depth 1 :local depth
 :END:
 :CONTENTS:
+- [[#add-account-to-input-group][Add Account to input Group]]
 - [[#find-the-keyboard-device][Find the Keyboard Device]]
 - [[#select-the-keyboard][Select the Keyboard]]
 - [[#create-a-map][Create a Map]]
 - [[#select-the-map][Select the Map]]
 :END:
 
+**** Add Account to input Group
+
+Add your account to the ~input~ group.
+
+#+BEGIN_SRC sh
+sudo usermod -aG input `whoami`
+#+END_SRC
+
+Login again.
+
 **** Find the Keyboard Device
 
-Find the device for your keyboard under ~/dev/input/by-id/~. It will usually end in ~event-kbd~.
+Find the device for your keyboard under ~/dev/input~.
+
+First look under ~/dev/input/by-id/~. It will usually end in ~event-kbd~.
 
 #+BEGIN_SRC sh
 ls /dev/input/by-id/*
 #+END_SRC
 
 Note the keyboard device in the output.
+
 #+BEGIN_EXAMPLE
 /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd
+#+END_EXAMPLE
+
+If not listed, find the device with ~evtest~.
+
+#+BEGIN_SRC sh
+evtest
+#+END_SRC
+
+Note the keyboard device in the output.
+
+#+BEGIN_EXAMPLE
+/dev/input/event21:	SIGMACHIP USB Keyboard
 #+END_EXAMPLE
 
 **** Select the Keyboard
@@ -73,6 +99,10 @@ The ~-k~ option is used to select the keyboard. Give the path to the keyboard de
 
 #+BEGIN_SRC sh
 ./src/xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./src/maps/minidox/60_ansi -s > /dev/ttyACM0
+#+END_SRC
+
+#+BEGIN_SRC sh
+./src/xmk -k /dev/input/event21 -m ./src/maps/minidox/60_ansi -s > /dev/ttyACM0
 #+END_SRC
 
 **** Create a Map
