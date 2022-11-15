@@ -288,7 +288,7 @@ Edit [[./zmk-config/xmk.keymap]] to add your keymap. No transform is required.
 
 For local builds, merge https://github.com/zmkfirmware/zmk/pull/1318, ~west update~, and build with shield ~xmk~ and the appropriate board for your MCU board, using the path to [[./zmk-config]] for [[https://zmk.dev/docs/development/build-flash#building-from-zmk-config-folder][ZMK_CONFIG]].
 
-For workflow builds, fork this repo. Edit [[./zmk-config/build-xmk-shield.yml]] to adjust the value for ~board~ for your MCU board. Run the ~Build xmk shield~ workflow.
+For workflow builds, fork this repo. Edit [[./.github/workflows/build-xmk-shield.yml]] to adjust the value for ~board~ for your MCU board. Run the ~Build xmk shield~ workflow.
 
 Connect the MCU board to USB, enter the bootloader (e.g. for [[https://nicekeyboards.com/docs/nice-nano/getting-started#flashing-firmware-and-bootloaders][nice!nano]] or [[https://wiki.seeedstudio.com/Seeeduino-XIAO/#enter-bootloader-mode][Seeeduino XIAO]]), and flash the firmware.
 
