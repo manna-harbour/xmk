@@ -284,11 +284,11 @@ A bare ZMK-compatible MCU board connected to the host over USB, running ZMK buil
 
 ***** xmk Shield Setup
 
-Edit [[./zmk/xmk.keymap]] to add your keymap. No transform is required.
+Edit [[./zmk-config/xmk.keymap]] to add your keymap. No transform is required.
 
-For local builds, merge https://github.com/zmkfirmware/zmk/pull/1318, ~west update~, and build with shield ~xmk~ and the appropriate board for your MCU board, using the path to [[./zmk]] for [[https://zmk.dev/docs/development/build-flash#building-from-zmk-config-folder][ZMK_CONFIG]].
+For local builds, merge https://github.com/zmkfirmware/zmk/pull/1318, ~west update~, and build with shield ~xmk~ and the appropriate board for your MCU board, using the path to [[./zmk-config]] for [[https://zmk.dev/docs/development/build-flash#building-from-zmk-config-folder][ZMK_CONFIG]].
 
-For workflow builds, fork this repo. Edit [[./zmk/build-xmk-shield.yml]] to adjust the value for ~board~ for your MCU board. Run the ~Build xmk shield~ workflow.
+For workflow builds, fork this repo. Edit [[./zmk-config/build-xmk-shield.yml]] to adjust the value for ~board~ for your MCU board. Run the ~Build xmk shield~ workflow.
 
 Connect the MCU board to USB, enter the bootloader (e.g. for [[https://nicekeyboards.com/docs/nice-nano/getting-started#flashing-firmware-and-bootloaders][nice!nano]] or [[https://wiki.seeedstudio.com/Seeeduino-XIAO/#enter-bootloader-mode][Seeeduino XIAO]]), and flash the firmware.
 
@@ -331,9 +331,9 @@ A Zephyr native posix application running on the host. USB HID is over USB/IP. C
 
 ***** native_posix_64 Board Setup
 
-Edit [[./zmk/native_posix_64.keymap]] to add your keymap. No transform is required.
+Edit [[./zmk-config/native_posix_64.keymap]] to add your keymap. No transform is required.
 
-For local builds, merge https://github.com/zmkfirmware/zmk/pull/1318, ~west update~, and build with board ~native_posix_64~, using the path to [[./zmk]] for [[https://zmk.dev/docs/development/build-flash#building-from-zmk-config-folder][ZMK_CONFIG]].
+For local builds, merge https://github.com/zmkfirmware/zmk/pull/1318, ~west update~, and build with board ~native_posix_64~, using the path to [[./zmk-config]] for [[https://zmk.dev/docs/development/build-flash#building-from-zmk-config-folder][ZMK_CONFIG]].
 
 For workflow builds, fork this repo and run the ~Build native_posix_64 board~ workflow.
 

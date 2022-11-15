@@ -8,7 +8,7 @@ jobs:
   build:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
     with:
-      config_path: zmk
-      build_matrix_path: zmk/native_posix_64.yml
+      config_path: zmk-config
+      build_matrix_path: zmk-config/native_posix_64.yml
       fallback_binary: elf
-      artifact_name: xmk-native_posix_64-board
+      archive_name: xmk-native_posix_64-board
