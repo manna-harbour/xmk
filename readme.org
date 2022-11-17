@@ -4,6 +4,9 @@
 # M-x org-make-toc to update TOC
 # https://github.com/alphapapa/org-make-toc
 
+# M-x org-babel-mark-block M-x mermaid-compile-region to preview diagram
+# https://github.com/abrochard/mermaid-mode
+
 * [[https://github.com/manna-harbour/xmk][𝑥MK]]
 :PROPERTIES:
 :TOC:      :include descendants :depth 1
@@ -11,20 +14,265 @@
 
 [[docs/images/xmk-banner.jpg]]
 
-Use programmable keyboard firmware with any keyboard.
+*Use programmable keyboard firmware with any keyboard.*
 
 :CONTENTS:
-- [[#overview][Overview]]
+- [[#introduction][Introduction]]
+- [[#operation][Operation]]
 - [[#xmk][xmk]]
 - [[#maps][Maps]]
 - [[#firmware][Firmware]]
-- [[#related-projects][Related Projects]]
 - [[#discussions-and-support][Discussions and Support]]
 :END:
 
-** Overview
+** Introduction
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+:CONTENTS:
+- [[#uses][Uses]]
+- [[#overview][Overview]]
+- [[#background][Background]]
+:END:
+*** Uses
 
-[[#xmk][xmk]] exclusively receives key events from the keyboard, translates keycodes into keymap key positions according to a [[#maps][map]], and outputs firmware shell commands. The [[#firmware][firmware]] reads the shell commands and triggers key events in the keymap. For background see [[#related-projects][Related Projects]], and for help see [[#discussions-and-support][Discussions and Support]].
+- Use QMK or ZMK with any keyboard connected to a Linux host, including
+  - non-programmable keyboards,
+  - incompatible programmable keyboards,
+  - QMK or ZMK keyboards (using a keymap or layer without dual function keys),
+  - BT or other wireless keyboards, and
+  - built-in laptop keyboards.
+- Record and play back timed keystrokes to
+  - test keymap changes,
+  - compare behaviour between QMK and ZMK, or
+  - debug firmware timing issues.
+- For other uses see https://github.com/manna-harbour/xmk/discussions/2.
+
+*** Overview
+
+𝑥MK facilitates the use of programmable keyboard firmware with any keyboard.
+
+With 𝑥MK, a keyboard, and an MCU board running programmable keyboard firmware, are connected to the host, and key events are diverted by ~xmk~ from the keyboard to the MCU board for processing by the firmware. 𝑥MK supports any keyboard, Linux hosts, and QMK or ZMK keymaps, and requires an MCU board and the ~xmk~ application.
+
+#+begin_src mermaid :file xmk-overview.svg
+graph LR
+    kbd([keyboard])-->xmk
+    subgraph host
+        xmk
+        apps([applications])
+    end
+    xmk-->mcu
+    mcu[MCU board]-->apps
+#+end_src
+
+With 𝑥MK Native, the firmware instead runs as a process on the host. 𝑥MK Native supports any keyboard, Linux hosts, and ZMK keymaps, and requires the ~xmk~ and ~usbip~ applications and no additional hardware.
+
+#+begin_src mermaid :file xmk-native-overview.svg
+graph LR
+    kbd([keyboard])-->xmk
+    subgraph host
+        xmk-->firmware-->usbip-->apps([applications])
+    end
+#+end_src
+
+*** Background
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+:CONTENTS:
+- [[#non-programmable-keyboards][Non-Programmable Keyboards]]
+- [[#programmable-keyboards][Programmable Keyboards]]
+- [[#𝑥mk-and-related-projects][𝑥MK and Related Projects]]
+:END:
+
+**** Non-Programmable Keyboards
+
+With non-programmable keyboards, keyswitches are scanned for state changes by an integrated controller, and keycode events are generated with a fixed relationship between key and keycode. Keycode events are transmitted from the controller to the host and are made available to applications on the host.
+
+#+begin_src mermaid :file non-programmable-keyboard.svg
+graph LR
+    subgraph non-programmable keyboard
+        ks([keyswitches])-->|state <br> changes|c[controller]
+    end
+    subgraph host
+        apps([applications])
+    end
+    c-->|keycode <br> events|apps
+#+end_src
+
+**** Programmable Keyboards
+
+[[https://qmk.fm/][QMK]] and [[https://zmk.dev/][ZMK]] are firmware for compatible programmable keyboards, and support customisation functions such as remapping, layers, and dual functions keys. Typical programmable keyboards use an MCU board to run the firmware. The firmware scans the keyswitches for state changes in the same way as with a non-programmable keyboard. Keycode events are generated via a customisable keymap. Keycode events are transmitted from the keymap to the host and are made available to applications on the host.
+
+#+begin_src mermaid :file programmable-keyboard.svg
+graph LR
+    subgraph programmable keyboard
+        ks([keyswitches])
+        subgraph MCU board
+            km[keymap]
+        end
+        ks-->|state <br> changes|km
+    end
+    km-->|keycode <br> events|apps
+    subgraph host
+        apps([applications])
+    end
+#+end_src
+
+**** 𝑥MK and Related Projects
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+𝑥MK and related projects facilitate the use of customisable keymaps with non-programmable keyboards.
+
+:CONTENTS:
+- [[#kmonad][KMonad]]
+- [[#converter][Converter]]
+- [[#modification][Modification]]
+- [[#comparison-summary][Comparison Summary]]
+- [[#miryoku-qmk-miryoku-zmk-and-miryoku-kmonad][Miryoku QMK, Miryoku ZMK, and Miryoku KMonad]]
+:END:
+
+***** KMonad
+
+With [[https://github.com/kmonad/kmonad][KMonad]], key events are diverted from the keyboard to the ~kmonad~ application on the host for processing by the KMonad keymap. KMonad supports any keyboard, multiple platforms, and KMonad keymaps, and requires the ~kmonad~ application and no additional hardware.
+
+#+begin_src mermaid :file xmonad.svg
+graph LR
+    kbd([keyboard])-->kmonad
+    subgraph host
+        kmonad-->apps([applications])
+    end
+#+end_src
+
+***** Converter
+
+With a [[https://github.com/qmk/qmk_firmware/tree/master/keyboards/converter/usb_usb][QMK USB to USB keyboard protocol converter]], the converter is connected between keyboard and host, and key events are processed by the keymap. The converter supports USB keyboards, any host, and QMK keymaps, and requires the converter hardware and no additional software.
+
+#+begin_src mermaid :file xmonad.svg
+graph LR
+    kbd([keyboard])-->km
+    subgraph converter
+        km[keymap]
+    end
+    subgraph host
+        km-->apps([applications])
+    end
+#+end_src
+
+***** Modification
+
+With hardware modification, the non-programmable controller can be replaced with an MCU board running programmable firmware, converting the [[#non-programmable-keyboards][non-programmable keyboard]] into a [[#programmable-keyboards][programmable keyboard]]. Hardware modification supports modifiable keyboards, any host, and QMK or ZMK keymaps, and requires the MCU board and no additional software.
+
+***** Comparison Summary
+
+|            | 𝑥MK       | 𝑥MK Native     | KMonad   | Converter | Modification |
+|------------+-----------+----------------+----------+-----------+--------------|
+| *Keyboard* | any       | any            | any      | USB       | modifiable   |
+| *OS*       | Linux     | Linux          | multiple | any       | any          |
+| *Hardware* | MCU board | none           | none     | converter | MCU board    |
+| *Software* | ~xmk~     | ~xmk~, ~usbip~ | ~kmonad~ | none      | none         |
+| *Keymap*   | QMK, ZMK  | ZMK            | KMonad   | QMK       | QMK, ZMK     |
+
+***** Miryoku QMK, Miryoku ZMK, and Miryoku KMonad
+
+𝑥MK can be used with any keymap. [[https://github.com/manna-harbour/miryoku_qmk/tree/miryoku/users/manna-harbour_miryoku#𝑥mk][Miryoku QMK]] and [[https://github.com/manna-harbour/miryoku_zmk#𝑥mk][Miryoku ZMK]] include support for 𝑥MK. [[https://github.com/manna-harbour/miryoku_kmonad][Miryoku KMonad]] can be used as an alternative to Miryoku QMK and Miryoku ZMK with 𝑥MK.
+
+** Operation
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+:CONTENTS:
+- [[#𝑥mk-operation][𝑥MK Operation]]
+- [[#𝑥mk-native-operation][𝑥MK Native Operation]]
+- [[#record-and-playback-operation][Record and Playback Operation]]
+:END:
+
+*** 𝑥MK Operation
+
+The required hardware components are any keyboard, an MCU board running QMK / ZMK firmware built with the [[#qmk][QMK converter/xmk keyboard]] / [[#xmk-shield][ZMK xmk shield]] and desired keymap, and a Linux host. The required software components are the [[#xmk][xmk]] python application, and a [[#maps][map]] of keyboard keycode to keymap key positions.
+
+The keyboard is connected to the host via USB, BT, PS/2, etc. Keycode events from the keyboard are made available on the host as a keyboard evdev device.
+
+~xmk~ reads the map, grabs the keyboard evdev device, reads the keyboard keycode events, converts keycodes to keymap key positions according to the map, and outputs key position event shell commands via stdout.
+
+The MCU board is connected to the host via USB. The firmware includes a serial shell supporting keymap key position event shell commands. The shell is made available on the host as a tty device over USB CDC ACM (serial over USB).
+
+Output from ~xmk~ is redirected to the tty device. The firmware shell interprets the shell commands and triggers the corresponding events in the keymap.
+
+Keycode events from the keymap are sent to the host via USB HID, and are made available to the host as an MCU board firmware evdev device.
+
+#+begin_src mermaid :file xmk.svg
+graph TB
+    kbd([keyboard])-->|keycode events via <br> USB, BT, PS/2, etc.|kd
+    subgraph Linux host
+        kd[keyboard <br> evdev device]-->|keycode events <br> via evdev|xmk
+        map[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
+        xmk-->|key position event shell commands <br> via stdout|tty[MCU board firmware tty device]
+        md[MCU board firmware evdev device]-->|keycode events via evdev|a([applications])
+    end
+    tty-->|key position event shell commands <br> via USB CDC ACM|sh
+    subgraph MCU board firmware
+        sh[shell]-->|key position events|km[keymap]
+    end
+    km-->|keycode events via USB HID|md
+#+end_src
+
+*** 𝑥MK Native Operation
+
+The required hardware components are any keyboard, and a Linux host. The required software components are the [[#xmk][xmk]] python application, a [[#maps][map]] of keyboard keycode to keymap key positions, ZMK firmware built with the [[#native_posix_64-board][𝑥MK native_posix_64 board]] and desired keymap, and a USB/IP client.
+
+The keyboard is connected to the host via USB, BT, PS/2, etc. Keycode events from the keyboard are made available on the host as a keyboard evdev device.
+
+~xmk~ reads the map, grabs the keyboard evdev device, reads the keyboard keycode events, converts keycodes to keymap key positions according to the map, and outputs key position event shell commands via stdout.
+
+The firmware runs as a native process on the host. The firmware includes a serial shell supporting keymap key position event shell commands. The shell is made available on the host as a pty device.
+
+Output from ~xmk~ is redirected to the pty device. The firmware shell interprets the shell commands and triggers the corresponding events in the keymap.
+
+The firmware process includes a USB/IP server. Keycode events from the keymap are made available via the USB/IP server.
+
+The USB/IP client connects to the USB/IP server, and receives keycode events via USB/IP. Keycode events are made available on the host as a USB/IP evdev device.
+
+#+begin_src mermaid :file xmk-native.svg
+graph TB
+    kbd([keyboard])-->|keycode events via <br> USB, BT, PS/2, etc.|kd
+    subgraph Linux host
+        kd[keyboard <br> evdev device]-->|keycode events <br> via evdev|xmk
+        map[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
+        xmk-->|key position event shell commands <br> via stdout|pty[firmware process pty device]
+        subgraph firmware process
+            sh[shell]-->|key position events|km[keymap]-->|keycode events|us[USB/IP server]
+        end
+        pty-->|key position event shell commands <br> via pty|sh
+        us-->|keycode events via USB/IP|uc[USB/IP client]-->|keycode events|ud[USB/IP client evdev device]
+        ud-->|keycode events via evdev|a([applications])
+    end
+#+end_src
+
+*** Record and Playback Operation
+
+When recording, in addition to the normal [[#𝑥mk-operation][𝑥MK operation]] and [[#𝑥mk-native-operation][𝑥MK Native operation]], ~xmk~ saves key position events with timing to a file.
+
+#+begin_src mermaid :file xmk-record.svg
+graph TB
+    kd[[keyboard evdev device]]-->|keycode events <br> via evdev|xmk
+    map[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
+    xmk-->|key position event shell commands <br> via stdout|tty[[firmware tty / pty device]]
+    xmk-->|key position events <br> with timing <br> to file|rec[(recording)]
+#+end_src
+
+#+RESULTS:
+[[file:xmk-record.svg]]
+
+When playing back, the normal [[#𝑥mk-operation][𝑥MK operation]] and [[#𝑥mk-native-operation][𝑥MK Native operation]] is modified in that instead of reading the map and the keyboard evdev device, ~xmk~ reads key position events with timing from a file, and outputs key position event shell commands via stdout according to the timing.
+
+#+begin_src mermaid :file xmk-playback.svg
+graph TB
+    rec[(recording)]-->|key position events with timing <br> from file|xmk
+    xmk-->|key position event shell commands <br> via stdout|tty[[firmware tty / pty device]]
+#+end_src
 
 ** xmk
 :PROPERTIES:
@@ -384,25 +632,9 @@ When using ~xmk~ for [[#typing][typing]], redirect output to the pty device from
 ./src/xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./src/maps/minidox/60_ansi -s > /dev/pts/18
 #+END_SRC
 
-** Related Projects
-
-[[https://qmk.fm/][QMK]] and [[https://zmk.dev/][ZMK]] are firmware for compatible programmable keyboards, and support customisation functions such as remapping, layers, and dual functions keys. 𝑥MK enables QMK and ZMK to be used with any keyboard, so that customisation functions can be used on non-programmable keyboards.
-
-[[https://github.com/kmonad/kmonad][KMonad]] or a [[https://github.com/qmk/qmk_firmware/tree/master/keyboards/converter/usb_usb][QMK USB to USB keyboard protocol converter]] can be used in a similar manner. The main differences are summarised below.
-
-|            | 𝑥MK       | 𝑥MK [[#native_posix_64-board][native]]   | KMonad   | Converter |
-|------------+-----------+------------------------------------------+----------+-----------|
-| *Keyboard* | any       | any                                      | any      | USB       |
-| *OS*       | Linux     | Linux                                    | multiple | any       |
-| *Hardware* | MCU board | none                                     | none     | converter |
-| *Software* | ~xmk~     | ~xmk~, ~usbip~                           | ~kmonad~ | none      |
-| *Keymap*   | QMK, ZMK  | ZMK                                      | KMonad   | QMK       |
-
-𝑥MK can be used with any keymap. [[https://github.com/manna-harbour/miryoku_qmk/tree/miryoku/users/manna-harbour_miryoku#𝑥mk][Miryoku QMK]] and [[https://github.com/manna-harbour/miryoku_zmk#𝑥mk][Miryoku ZMK]] include support for 𝑥MK.
 ** Discussions and Support
 
 - [[https://github.com/manna-harbour/xmk/discussions/1][𝑥MK Discussions and Support]]
 
 * 
-
 [[https://github.com/manna-harbour][https://raw.githubusercontent.com/manna-harbour/miryoku/master/data/logos/manna-harbour-boa-32.png]]
