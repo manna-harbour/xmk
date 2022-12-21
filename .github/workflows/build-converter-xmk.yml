@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir artifacts && cp qmk_firmware/*xmk* artifacts
       - name: artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: xmk-converter-xmk
           path: artifacts
