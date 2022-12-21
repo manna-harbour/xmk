@@ -473,7 +473,7 @@ A bare QMK-compatible MCU board connected to the host over USB, running QMK buil
 
 **** converter/xmk Setup
 
-The ~converter/xmk~ keyboard definition is a available at [[https://github.com/manna-harbour/qmk_firmware/tree/xmk/keyboards/converter/xmk]].
+The ~converter/xmk~ keyboard definition is a available at [[https://github.com/qmk/qmk_firmware/tree/master/keyboards/converter/xmk]].
 
 Add your keymap. If it is not using one of the supported layouts, also edit ~info.json~ to add a new entry under ~layouts~, ensuring the ~matrix~ entries are in order and without gaps. If adding support for a community layout, also append to ~community_layouts~.
 

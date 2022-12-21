@@ -18,14 +18,6 @@ jobs:
           ref: master
           path: qmk_firmware
           fetch-depth: 0
-      - name: xmk
-        working-directory: qmk_firmware
-        run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git remote add manna-harbour https://github.com/manna-harbour/qmk_firmware.git
-          git fetch manna-harbour xmk
-          git merge manna-harbour/xmk
       - name: submodules
         working-directory: qmk_firmware
         run: |
