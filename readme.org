@@ -208,7 +208,7 @@ graph TB
     kbd([keyboard])-->|keycode events via <br> USB, BT, PS/2, etc.|kd
     subgraph Linux host
         kd[keyboard <br> evdev device]-->|keycode events <br> via evdev|xmk
-        map[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
+        mapfile[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
         xmk-->|key position event shell commands <br> via stdout|tty[MCU board firmware tty device]
         md[MCU board firmware evdev device]-->|keycode events via evdev|a([applications])
     end
@@ -240,7 +240,7 @@ graph TB
     kbd([keyboard])-->|keycode events via <br> USB, BT, PS/2, etc.|kd
     subgraph Linux host
         kd[keyboard <br> evdev device]-->|keycode events <br> via evdev|xmk
-        map[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
+        mapfile[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
         xmk-->|key position event shell commands <br> via stdout|pty[firmware process pty device]
         subgraph firmware process
             sh[shell]-->|key position events|km[keymap]-->|keycode events|us[USB/IP server]
@@ -258,7 +258,7 @@ When recording, in addition to the normal [[#𝑥mk-operation][𝑥MK operation]
 #+begin_src mermaid :file xmk-record.svg
 graph TB
     kd[[keyboard evdev device]]-->|keycode events <br> via evdev|xmk
-    map[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
+    mapfile[(map)]-->|keycode to keymap <br> position mapping <br> from file|xmk
     xmk-->|key position event shell commands <br> via stdout|tty[[firmware tty / pty device]]
     xmk-->|key position events <br> with timing <br> to file|rec[(recording)]
 #+end_src
