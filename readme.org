@@ -1,4 +1,4 @@
-# Copyright 2022 Manna Harbour
+# Copyright 2023 Manna Harbour
 # https://github.com/manna-harbour/xmk
 
 # M-x org-make-toc to update TOC
@@ -36,15 +36,15 @@
 :END:
 *** Uses
 
-- Use QMK or ZMK with any keyboard connected to a Linux host, including
+- Use QMK, ZMK, or KMK with any keyboard connected to a Linux host, including
   - non-programmable keyboards,
   - incompatible programmable keyboards,
-  - QMK or ZMK keyboards (using a keymap or layer without dual function keys),
+  - QMK, ZMK, or KMK keyboards (using a keymap or layer without dual function keys),
   - BT or other wireless keyboards, and
   - built-in laptop keyboards.
 - Record and play back timed keystrokes to
   - test keymap changes,
-  - compare behaviour between QMK and ZMK, or
+  - compare behaviour between QMK, ZMK, and KMK, or
   - debug firmware timing issues.
 - For other uses see https://github.com/manna-harbour/xmk/discussions/2.
 
@@ -52,7 +52,7 @@
 
 𝑥MK facilitates the use of programmable keyboard firmware with any keyboard.
 
-With 𝑥MK, a keyboard, and an MCU board running programmable keyboard firmware, are connected to the host, and key events are diverted by ~xmk~ from the keyboard to the MCU board for processing by the firmware. 𝑥MK supports any keyboard, Linux hosts, and QMK or ZMK keymaps, and requires an MCU board and the ~xmk~ application.
+With 𝑥MK, a keyboard, and an MCU board running programmable keyboard firmware, are connected to the host, and key events are diverted by ~xmk~ from the keyboard to the MCU board for processing by the firmware. 𝑥MK supports any keyboard, Linux hosts, and QMK, ZMK, or KMK keymaps, and requires an MCU board and the ~xmk~ application.
 
 #+begin_src mermaid :file xmk-overview.svg
 graph LR
@@ -102,7 +102,7 @@ graph LR
 
 **** Programmable Keyboards
 
-[[https://qmk.fm/][QMK]] and [[https://zmk.dev/][ZMK]] are firmware for compatible programmable keyboards, and support customisation functions such as remapping, layers, and dual functions keys. Typical programmable keyboards use an MCU board to run the firmware. The firmware scans the keyswitches for state changes in the same way as with a non-programmable keyboard. Keycode events are generated via a customisable keymap. Keycode events are transmitted from the keymap to the host and are made available to applications on the host.
+[[https://qmk.fm/][QMK]], [[https://zmk.dev/][ZMK]], and [[https://github.com/KMKfw/kmk_firmware][KMK]] are firmware for compatible programmable keyboards, and support customisation functions such as remapping, layers, and dual functions keys. Typical programmable keyboards use an MCU board to run the firmware. The firmware scans the keyswitches for state changes in the same way as with a non-programmable keyboard. Keycode events are generated via a customisable keymap. Keycode events are transmitted from the keymap to the host and are made available to applications on the host.
 
 #+begin_src mermaid :file programmable-keyboard.svg
 graph LR
@@ -131,7 +131,7 @@ graph LR
 - [[#converter][Converter]]
 - [[#modification][Modification]]
 - [[#comparison-summary][Comparison Summary]]
-- [[#miryoku-qmk-miryoku-zmk-and-miryoku-kmonad][Miryoku QMK, Miryoku ZMK, and Miryoku KMonad]]
+- [[#miryoku][Miryoku]]
 :END:
 
 ***** KMonad
@@ -163,21 +163,21 @@ graph LR
 
 ***** Modification
 
-With hardware modification, the non-programmable controller can be replaced with an MCU board running programmable firmware, converting the [[#non-programmable-keyboards][non-programmable keyboard]] into a [[#programmable-keyboards][programmable keyboard]]. Hardware modification supports modifiable keyboards, any host, and QMK or ZMK keymaps, and requires the MCU board and no additional software.
+With hardware modification, the non-programmable controller can be replaced with an MCU board running programmable firmware, converting the [[#non-programmable-keyboards][non-programmable keyboard]] into a [[#programmable-keyboards][programmable keyboard]]. Hardware modification supports modifiable keyboards, any host, and QMK, ZMK, or KMK keymaps, and requires the MCU board and no additional software.
 
 ***** Comparison Summary
 
-|            | 𝑥MK       | 𝑥MK Native     | KMonad   | Converter | Modification |
-|------------+-----------+----------------+----------+-----------+--------------|
-| *Keyboard* | any       | any            | any      | USB       | modifiable   |
-| *OS*       | Linux     | Linux          | multiple | any       | any          |
-| *Hardware* | MCU board | none           | none     | converter | MCU board    |
-| *Software* | ~xmk~     | ~xmk~, ~usbip~ | ~kmonad~ | none      | none         |
-| *Keymap*   | QMK, ZMK  | ZMK            | KMonad   | QMK       | QMK, ZMK     |
+|            | 𝑥MK           | 𝑥MK Native     | KMonad   | Converter | Modification  |
+|------------+---------------+----------------+----------+-----------+---------------|
+| *Keyboard* | any           | any            | any      | USB       | modifiable    |
+| *OS*       | Linux         | Linux          | multiple | any       | any           |
+| *Hardware* | MCU board     | none           | none     | converter | MCU board     |
+| *Software* | ~xmk~         | ~xmk~, ~usbip~ | ~kmonad~ | none      | none          |
+| *Keymap*   | QMK, ZMK, KMK | ZMK            | KMonad   | QMK       | QMK, ZMK, KMK |
 
-***** Miryoku QMK, Miryoku ZMK, and Miryoku KMonad
+***** Miryoku
 
-𝑥MK can be used with any keymap. [[https://github.com/manna-harbour/miryoku_qmk/tree/miryoku/users/manna-harbour_miryoku#𝑥mk][Miryoku QMK]] and [[https://github.com/manna-harbour/miryoku_zmk#𝑥mk][Miryoku ZMK]] include support for 𝑥MK. [[https://github.com/manna-harbour/miryoku_kmonad][Miryoku KMonad]] can be used as an alternative to Miryoku QMK and Miryoku ZMK with 𝑥MK.
+𝑥MK can be used with any keymap. [[https://github.com/manna-harbour/miryoku_qmk/tree/miryoku/users/manna-harbour_miryoku#𝑥mk][Miryoku QMK]], [[https://github.com/manna-harbour/miryoku_zmk#𝑥mk][Miryoku ZMK]], and [[https://github.com/manna-harbour/miryoku_kmk#𝑥mk][Miryoku KMK]] include support for 𝑥MK. [[https://github.com/manna-harbour/miryoku_kmonad][Miryoku KMonad]] can be used as an alternative to Miryoku QMK, Miryoku ZMK, and Miryoku KMK with 𝑥MK.
 
 ** Operation
 :PROPERTIES:
@@ -191,7 +191,7 @@ With hardware modification, the non-programmable controller can be replaced with
 
 *** 𝑥MK Operation
 
-The required hardware components are any keyboard, an MCU board running QMK / ZMK firmware built with the [[#qmk][QMK converter/xmk keyboard]] / [[#xmk-shield][ZMK xmk shield]] and desired keymap, and a Linux host. The required software components are the [[#xmk][xmk]] python application, and a [[#maps][map]] of keyboard keycode to keymap key positions.
+The required hardware components are any keyboard, an MCU board running QMK / ZMK / KMK firmware built with the [[#qmk][QMK converter / xmk keyboard]] / [[#xmk-shield][ZMK xmk shield]] / [[#kmk][KMK xmk keyboard]] and desired keymap, and a Linux host. The required software components are the [[#xmk][xmk]] python application, and a [[#maps][map]] of keyboard keycode to keymap key positions.
 
 The keyboard is connected to the host via USB, BT, PS/2, etc. Keycode events from the keyboard are made available on the host as a keyboard evdev device.
 
@@ -384,7 +384,9 @@ The ~-m~ option is used to select a map. Give the path to the map file. Use one 
 
 **** Typing
 
-The ~-s~ option is used to output firmware shell commands. Redirect output to the tty or pty device from [[#converterxmk-setup][converter/xmk Setup]], [[#xmk-shield-setup][xmk Shield Setup]], or [[#native_posix_64-board-setup][native_posix_64 Board Setup]], as appropriate. Also [[#select-the-keyboard][select the keyboard]] and [[#select-the-map][select the map]].
+The ~-s~ option is used to output firmware shell commands.
+Redirect output to the tty or pty device from [[#converterxmk-setup][converter/xmk Setup]], [[#xmk-shield-setup][xmk Shield Setup]],  [[#native_posix_64-board-setup][native_posix_64 Board Setup]], or [[#kmk-xmk-setup][KMK xmk Setup]] as appropriate.
+Also [[#select-the-keyboard][select the keyboard]] and [[#select-the-map][select the map]].
 
 #+BEGIN_SRC sh
 ./src/xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./src/maps/minidox/60_ansi -s > /dev/ttyACM0
@@ -453,6 +455,7 @@ Corresponds to the default [[https://github.com/manna-harbour/miryoku/tree/maste
 :CONTENTS:
 - [[#qmk][QMK]]
 - [[#zmk][ZMK]]
+- [[#kmk][KMK]]
 :END:
 
 *** QMK
@@ -630,6 +633,52 @@ When using ~xmk~ for [[#typing][typing]], redirect output to the pty device from
 
 #+BEGIN_SRC sh
 ./src/xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./src/maps/minidox/60_ansi -s > /dev/pts/18
+#+END_SRC
+
+*** KMK
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :local depth
+:END:
+
+A bare KMK-compatible MCU board connected to the host over USB, running KMK with the KMK ~xmk~ keyboard definition.
+USB HID is over USB.
+Communication from ~xmk~ to KMK is over USB CDC ACM UART.
+
+:CONTENTS:
+- [[#kmk-xmk-prerequisites][KMK xmk Prerequisites]]
+- [[#kmk-xmk-setup][KMK xmk Setup]]
+:END:
+
+**** KMK xmk Prerequisites
+
+- A KMK-compatible MCU board.
+
+**** KMK xmk Setup
+
+Merge https://github.com/manna-harbour/kmk_firmware/tree/xmk with KMK master.
+
+Install KMK from the merged branch according to the KMK documentation.
+
+Add your keymap to ~boards/xmk/main.py~.
+
+Copy the contents of ~boards/xmk/~ to the root of the USB drive for your MCU board.
+
+Reset or reconnect the MCU board and find the tty device.
+
+#+BEGIN_SRC sh
+sudo dmesg | grep tty
+#+END_SRC
+
+Note the second tty device in the output.
+#+BEGIN_EXAMPLE
+cdc_acm 1-1:1.0: ttyACM0: USB ACM device
+cdc_acm 1-1:1.2: ttyACM1: USB ACM device
+#+END_EXAMPLE
+
+When using ~xmk~ for [[#typing][typing]], redirect output to the tty device from the previous step.
+
+#+BEGIN_SRC sh
+./src/xmk -k /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -m ./src/maps/minidox/60_ansi -s > /dev/ttyACM1
 #+END_SRC
 
 ** Discussions and Support
